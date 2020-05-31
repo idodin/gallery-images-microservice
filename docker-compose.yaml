@@ -1,0 +1,22 @@
+version: "3"
+services:
+  api:
+    image: node:11.13.0-alpine
+    container_name: api
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=dev
+      - SECRET=Ks10daK3g
+      - GCS_BUCKET=shopify-interview
+      - GCLOUD_PROJECT=shopify-interview
+      - GCS_KEYFILE=gcp.json
+    working_dir: /app
+    command: npm run start:local
+    network_mode: host
+  mongo:
+    container_name: mongo
+    image: mongo
+    network_mode: host
+    logging:
+      driver: none
