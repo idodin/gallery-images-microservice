@@ -7,7 +7,7 @@ services:
       - .:/app
     environment:
       - NODE_ENV=dev
-      - SECRET=Ks10daK3g
+      - SECRET=5h0p1fY
       - GCS_BUCKET=shopify-interview
       - GCLOUD_PROJECT=shopify-interview
       - GCS_KEYFILE=gcp.json

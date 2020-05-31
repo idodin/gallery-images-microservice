@@ -1,21 +1,23 @@
-import {body, param, query, ValidationChain} from "express-validator/check";
+import {body, param, query, header, ValidationChain} from "express-validator/check";
 import {Tag} from "../interfaces/IImage";
 
 export function imageValidator(method: string): ValidationChain[] {
     switch (method) {
         case "GET /images": {
             return [
-                query("userId", "Invalid 'userId'").optional().isMongoId()
+                query("userId", "Invalid 'userId'").optional().isMongoId(),
+                header("authorization", "Missing Authorization Token").exists()
             ];
         }
         case "GET /images/:imageId": {
             return [
                 param("imageId", "Invalid or missing ':imageId'").exists().isMongoId(),
-                query("token", "Missing 'token'").exists()
+                header("authorization", "Missing Authorization Token").exists()
             ];
         }
         case "POST /images": {
             return [
+                header("authorization", "Missing Authorization Token").exists(),
                 body("title", "Invalid or missing 'title'").isString().exists(),
                 body("isPublic", "Invalid or missing 'isPublic'").isBoolean().exists(),
                 body("description", "Invalid or missing 'description'").isString().exists(),
@@ -26,5 +28,7 @@ export function imageValidator(method: string): ValidationChain[] {
 }
 
 const validateTags = (tags: Array<string>) => {
-    return tags.every(tag => tag.toLowerCase() in Tag)
+
+    // TODO: find a nicer way of doing this
+    return ((typeof tags === "string" || tags instanceof String) && tags.toString().toLowerCase() in Tag) || (tags.every(tag => tag.toLowerCase() in Tag));
 }

@@ -10,6 +10,6 @@ export interface IImage {
     description: string;
     createdAt: string;
     updatedAt: string;
-    author: IUser;
+    author: string;
     tags: string[];
 }

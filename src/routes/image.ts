@@ -2,6 +2,7 @@ import { Router } from "express";
 import { imageController } from "../controllers/image";
 import { imageValidator } from "../validators/image";
 import { uploadHandler } from "../util/uploader";
+import {decodeJWT} from "../util/tokenDecoder";
 
 const imageRouter: Router = Router();
 
@@ -16,7 +17,7 @@ const imageRouter: Router = Router();
  *              description: ID of the Users whose images to retrieve
  *              schema:
  *                  type: string
- *                  required: true
+ *                  required: false
  *      tags:
  *          - Images
  *      produces:
@@ -29,7 +30,7 @@ const imageRouter: Router = Router();
  *          500:
  *              description: Internal server error
  */
-imageRouter.get("/", imageValidator("GET /images"), imageController.index);
+imageRouter.get("/", imageValidator("GET /images"), decodeJWT, imageController.index);
 
 /**
  * @swagger
@@ -42,7 +43,7 @@ imageRouter.get("/", imageValidator("GET /images"), imageController.index);
  *              description: ID of the Image to retrieve
  *              schema:
  *                  type: string
- *                  required: false
+ *                  required: true
  *      tags:
  *          - Images
  *      produces:
@@ -57,7 +58,7 @@ imageRouter.get("/", imageValidator("GET /images"), imageController.index);
  *          500:
  *              description: Internal server error
  */
-imageRouter.get("/:imageId", imageValidator("GET /images/:imageId"), imageController.show);
+imageRouter.get("/:imageId", imageValidator("GET /images/:imageId"), decodeJWT, imageController.show);
 
-imageRouter.post("/", uploadHandler.single('image'), imageValidator("POST /images"), imageController.create);
+imageRouter.post("/", uploadHandler.single('image'), imageValidator("POST /images"), decodeJWT,  imageController.create);
 export { imageRouter };

@@ -12,9 +12,18 @@ const imageController = {
     index: async (req: Request, res: Response) => {
         try {
             const { userId } = req.query;
-            res.status(statusCodes.SUCCESS).send(
-                userId? await imageDBInteractions.all() : await imageDBInteractions.findByUser(userId)
-            );
+            const loggedId = req['decoded']['id'];
+            if (!userId) {
+                res.status(statusCodes.SUCCESS).send(
+                    await imageDBInteractions.all(loggedId)
+                )
+            } else {
+                res.status(statusCodes.SUCCESS).send(
+                    userId === loggedId ?
+                        await imageDBInteractions.findForUser(userId) :
+                        await imageDBInteractions.findByUser(userId)
+                )
+            }
         } catch (err) {
             res.status(statusCodes.SERVER_ERROR).send(err);
         }
@@ -27,8 +36,13 @@ const imageController = {
         }
         try {
             const { token } = req.query;
+            const loggedId = req['decoded']['id'];
             const imageId: string = req.params.imageId;
             const image: IImageModel = await imageDBInteractions.find(imageId);
+
+            if (image.author != loggedId && !image.isPublic){
+                res.status(statusCodes.UNAUTHORIZED).send({ status: statusCodes.UNAUTHORIZED, message: "Unauthorized access to Image"}); return;
+            }
             image ? res.status(statusCodes.SUCCESS).send(image) : res.status(statusCodes.NOT_FOUND).send({ status: statusCodes.NOT_FOUND, message: "Image not found" });
         } catch (error) {
             res.status(statusCodes.SERVER_ERROR).send(error);
@@ -36,15 +50,16 @@ const imageController = {
     },
 
     create: async (req: Request, res: Response) => {
-        console.log(req.body);
         const errors = validationResult(req);
         if(!errors.isEmpty()) {
             res.status(statusCodes.MISSING_PARAMS).json(errors.formatWith(errorMessage).array()[0]); return;
         }
         try {
+            const loggedId = req['decoded']['id'];
             let imageData: IImage = {
                 ...req.body,
-                link: req.file.path
+                link: req.file.path,
+                author: loggedId
             }
             let newImage: IImageModel = await imageDBInteractions.create(new Image(imageData));
 
