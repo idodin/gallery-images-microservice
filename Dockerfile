@@ -9,7 +9,7 @@ COPY package*.json tsconfig.json swaggerDoc.js gcp.json /app/
 RUN npm install
 
 COPY src /app/src/
-RUN npm run build && rm -rf src
+RUN npm run build
 
 EXPOSE 3000
 
