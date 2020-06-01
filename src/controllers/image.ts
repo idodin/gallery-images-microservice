@@ -55,7 +55,7 @@ const imageController = {
             res.status(statusCodes.MISSING_PARAMS).json(errors.formatWith(errorMessage).array()[0]); return;
         }
         if(req['fileValidationError']) {
-            res.status(statusCodes.BAD_REQUEST).send( { status: statusCodes.BAD_REQUEST, message: "Only files are accepted!"});
+            res.status(statusCodes.BAD_REQUEST).send( { status: statusCodes.BAD_REQUEST, message: req['fileValidationError']});
         }
         try {
             const loggedId = req['decoded']['id'];

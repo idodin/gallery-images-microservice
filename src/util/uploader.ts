@@ -4,7 +4,6 @@ import {imageFilter} from "./filter";
 
 const uploadHandler = multer({
     storage: GCPStorageEngine(),
-    limits: { fileSize: 4000000 },
     fileFilter: imageFilter
     });
 
