@@ -28,7 +28,7 @@ export function imageValidator(method: string): ValidationChain[] {
 }
 
 const validateTags = (tags: Array<string>) => {
-
+    if (!tags) return true;
     // TODO: find a nicer way of doing this
     return ((typeof tags === "string" || tags instanceof String) && tags.toString().toLowerCase() in Tag) || (tags.every(tag => tag.toLowerCase() in Tag));
 }

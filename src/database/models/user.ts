@@ -16,11 +16,6 @@ const userSchema: Schema = new Schema({
         type: String,
         unique: true,
     },
-    role: {
-        type: String,
-        enum: ["ADMIN", "USER"],
-        default: "USER",
-    },
     images: [{ type: Schema.Types.ObjectId, ref: "Image"}],
 }, {
     timestamps: true,
