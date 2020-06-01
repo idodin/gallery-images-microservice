@@ -18,9 +18,11 @@ export function imageValidator(method: string): ValidationChain[] {
         case "POST /images": {
             return [
                 header("authorization", "Missing Authorization Token").exists(),
-                body("title", "Invalid or missing 'title'").isString().exists(),
+                body("title", "Missing 'title'").exists(),
+                body("title", "Invalid 'title'").isString().custom(value => value.trim().length > 0),
                 body("isPublic", "Invalid or missing 'isPublic'").isBoolean().exists(),
-                body("description", "Invalid or missing 'description'").isString().exists(),
+                body("description", "Missing 'description'").exists(),
+                body("description", "Invalid 'description'").isString().custom(value => value.trim().length > 0),
                 body("tags", "Invalid tags in 'tags'").optional().custom(validateTags)
             ]
         }

@@ -13,4 +13,4 @@
 
 For development:
 * `npm install`
-* `npm run dev``File > Import File` and navigate to your local clone of the repository.
+* `npm run dev`
